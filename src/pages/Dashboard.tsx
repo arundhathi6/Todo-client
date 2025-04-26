@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import TodoItem from "../components/TodoItem";
 import { Todo, TodoStatus } from "../types";
-import axios from "axios";
 import TodoForm from "../components/TodoForm";
 
 // Dashboard component
