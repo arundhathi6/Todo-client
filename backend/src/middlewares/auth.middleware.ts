@@ -1,23 +1,33 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { isBlacklisted } from '../utils/blacklist';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { isBlacklisted } from "../utils/blacklist";
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const token = req.cookies?.accessToken || req.headers.authorization?.split(' ')[1];
+    const token =
+      req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.status(401).json({ message: 'No token provided' });
+      res.status(401).json({ message: "No token provided" });
+      return;
     }
 
     // Check if token is blacklisted (optional)
-    if (isBlacklisted(token)) return res.status(401).json({ message: 'Token is revoked' });
+    if (isBlacklisted(token)) {
+      res.status(401).json({ message: "Token is revoked" });
+      return;
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     (req as any).user = decoded;
-    
+
     next();
   } catch (err) {
     console.error(err);
-    return res.status(401).json({ message: 'Unauthorized' });
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
 };
