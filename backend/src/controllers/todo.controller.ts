@@ -7,8 +7,7 @@ export const createTodo = async (
 ): Promise<void> => {
   try {
     const { title, description, dueDate, status } = req.body;
-    const userId = (req as any).user.id;
-
+    const userId = (req as any).user.userId;
     const todo = new Todo({
       title,
       description,
@@ -29,7 +28,7 @@ export const createTodo = async (
 
 export const getTodos = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    const userId = (req as any).user.userId;
     const todos = await Todo.find({ owner: userId });
     res.status(200).json(todos);
     return;
@@ -45,7 +44,7 @@ export const updateTodo = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    const userId = (req as any).user.userId;
     const todoId = req.params.id;
     const updated = await Todo.findOneAndUpdate(
       { _id: todoId, owner: userId },
@@ -72,7 +71,7 @@ export const deleteTodo = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    const userId = (req as any).user.userId;
     const todoId = req.params.id;
     const deleted = await Todo.findOneAndDelete({ _id: todoId, owner: userId });
 

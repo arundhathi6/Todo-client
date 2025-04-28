@@ -15,7 +15,7 @@ app.post("/logout", logout);
 // todo routers
 app.post("/todo", authenticate, createTodo);
 app.get("/todo", authenticate, getTodos);
-app.put("/todo/update", authenticate, updateTodo);
-app.put("/todo/delete", authenticate, deleteTodo);
+app.put("/todo/:id", authenticate, updateTodo);
+app.delete("/todo/:id", authenticate, deleteTodo);
 
 export default app;

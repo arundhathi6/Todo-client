@@ -14,16 +14,12 @@ export const authenticate = async (
       res.status(401).json({ message: "No token provided" });
       return;
     }
-
-    // Check if token is blacklisted (optional)
     if (isBlacklisted(token)) {
       res.status(401).json({ message: "Token is revoked" });
       return;
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
     (req as any).user = decoded;
-
     next();
   } catch (err) {
     console.error(err);
