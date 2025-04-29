@@ -7,6 +7,7 @@ const API_URL = "https://todo-backend-mrjv.onrender.com";
 
 export default function Dashboard() {
   const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,7 +26,10 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
+        setLoading(true);
         if (!token) {
+          alert("Authorization required!");
+          setLoading(false);
           throw new Error("Authorization token is missing");
         }
 
@@ -36,9 +40,11 @@ export default function Dashboard() {
         };
         const response = await axios.get(`${API_URL}/todo`, config);
         setTodos(response.data);
+        setLoading(false);
         console.log("Get todo list", response.data);
       } catch (error) {
         console.error("Error fetching todos:", error);
+        setLoading(false);
       }
     };
 
@@ -219,16 +225,22 @@ export default function Dashboard() {
           Completed
         </button>
       </div>
-      <div className="h-72 overflow-y-auto justify-between">
-        {filteredTodos.map((todo) => (
-          <TodoItem
-            key={todo._id}
-            todo={todo}
-            onDelete={() => handleDeleteTodo(todo._id)}
-            onToggleStatus={() => handleToggleStatus(todo._id)}
-            onEdit={handleEdit}
-          />
-        ))}
+      <div className="h-72 overflow-y-auto flex items-center justify-center">
+        {loading ? (
+          <p className="text-gray-500 text-center w-full">Loading...</p>
+        ) : (
+          <div className="flex flex-col justify-between w-full">
+            {filteredTodos.map((todo) => (
+              <TodoItem
+                key={todo._id}
+                todo={todo}
+                onDelete={() => handleDeleteTodo(todo._id)}
+                onToggleStatus={() => handleToggleStatus(todo._id)}
+                onEdit={handleEdit}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}
