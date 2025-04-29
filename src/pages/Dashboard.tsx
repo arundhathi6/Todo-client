@@ -6,6 +6,7 @@ import axios from "axios";
 const API_URL = "https://todo-backend-mrjv.onrender.com";
 
 export default function Dashboard() {
+  const token = localStorage.getItem("token");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -22,26 +23,26 @@ export default function Dashboard() {
 
   // Fetch todos
   useEffect(() => {
-    // Add some dummy todos initially
-    setTodos([
-      {
-        id: "1",
-        title: "Sample Todo 1",
-        description: "This is a sample todo.",
-        dueDate: "2025-04-30",
-        status: "pending",
-      },
-      {
-        id: "2",
-        title: "Sample Todo 2",
-        description: "This is another sample todo.",
-        dueDate: "2025-04-25",
-        status: "completed",
-      },
-    ]);
-    // axios.get("/api/todos")
-    //   .then(response => setTodos(response.data))
-    //   .catch(error => console.error("Error fetching todos:", error));
+    const fetchTodos = async () => {
+      try {
+        if (!token) {
+          throw new Error("Authorization token is missing");
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`${API_URL}/todo`, config);
+        setTodos(response.data);
+        console.log("Get todo list", response.data);
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+      }
+    };
+
+    fetchTodos();
   }, []);
 
   const handleDeleteTodo = (id: string) => {
@@ -70,7 +71,6 @@ export default function Dashboard() {
     status: TodoStatus;
   }) => {
     try {
-      const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Authorization token is missing");
       }
