@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
-     "build": "echo 'no build necessary'"
+    "build": "echo 'no build necessary'",
+    "postinstall": "npm rebuild bcrypt --build-from-source"
   },
   "keywords": [],
   "author": "",
