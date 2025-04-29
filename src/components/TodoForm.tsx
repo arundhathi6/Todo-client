@@ -14,7 +14,7 @@ export default function TodoForm({ onAdd }: Props) {
     e.preventDefault();
 
     const newTodo: Todo = {
-      id: Date.now().toString(),
+      _id: Date.now().toString(),
       title,
       description,
       dueDate,

@@ -45,25 +45,6 @@ export default function Dashboard() {
     fetchTodos();
   }, []);
 
-  const handleDeleteTodo = (id: string) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-  };
-
-  const handleToggleStatus = (id: string) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id
-        ? {
-            ...todo,
-            status: (todo.status === "pending"
-              ? "completed"
-              : "pending") as TodoStatus,
-          }
-        : todo
-    );
-    setTodos(updatedTodos);
-  };
-
   const handleAddTodo = async (newTodo: {
     title: string;
     description: string;
@@ -90,6 +71,47 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeleteTodo = (id: string) => {
+    const updatedTodos = todos.filter((todo) => todo._id !== id);
+    setTodos(updatedTodos);
+  };
+
+  const handleToggleStatus = async (id: string) => {
+    if (!token) {
+      console.error("Authorization token is missing");
+      return;
+    }
+
+    const todoToUpdate = todos.find((todo) => todo._id === id);
+    if (!todoToUpdate) return;
+
+    const updatedStatus =
+      todoToUpdate.status === "pending" ? "completed" : "pending";
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/todo/${id}`,
+        { status: updatedStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedTodo = response.data;
+
+      const updatedTodos = todos.map((todo) =>
+        todo._id === id ? { ...todo, status: updatedTodo.status } : todo
+      );
+      alert("status updated!");
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error("Error updating todo status:", error);
+      alert("status updated failed!");
+    }
+  };
+
   const handleEdit = (todo: Todo) => {
     setEditTodo(todo);
     setNewTodo({
@@ -104,7 +126,7 @@ export default function Dashboard() {
   const handleSave = () => {
     if (editTodo) {
       const updatedTodos = todos.map((todo) =>
-        todo.id === editTodo.id ? { ...todo, ...newTodo } : todo
+        todo._id === editTodo._id ? { ...todo, ...newTodo } : todo
       );
 
       // Ensure that the status field is a valid TodoStatus
@@ -164,10 +186,10 @@ export default function Dashboard() {
       <div className="h-72 overflow-y-auto justify-between">
         {filteredTodos.map((todo) => (
           <TodoItem
-            key={todo.id}
+            key={todo._id}
             todo={todo}
-            onDelete={() => handleDeleteTodo(todo.id)}
-            onToggleStatus={() => handleToggleStatus(todo.id)}
+            onDelete={() => handleDeleteTodo(todo._id)}
+            onToggleStatus={() => handleToggleStatus(todo._id)}
             onEdit={handleEdit}
           />
         ))}

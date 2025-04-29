@@ -31,9 +31,9 @@ export default function TodoItem({
       <div className="flex flex-col gap-2">
         <button
           className="text-blue-600 hover:underline text-sm"
-          onClick={() => onToggleStatus(todo.id)}
+          onClick={() => onToggleStatus(todo._id)}
         >
-          {todo.status === "pending" ? "Mark Completed" : "Mark Pending"}
+          {todo.status === "pending" ? "Completed" : "Pending"}
         </button>
         <button
             className="text-green-600 hover:underline text-sm"
@@ -43,7 +43,7 @@ export default function TodoItem({
           </button>
         <button
           className="text-red-600 hover:underline text-sm"
-          onClick={() => onDelete(todo.id)}
+          onClick={() => onDelete(todo._id)}
         >
           Delete
         </button>

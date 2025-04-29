@@ -2,7 +2,7 @@
 export type TodoStatus = "pending" | "completed";
 
 export type Todo = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   dueDate: string;
