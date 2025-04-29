@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { User } from "../models/user.model";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { addToBlacklist } from "../utils/blacklist";
