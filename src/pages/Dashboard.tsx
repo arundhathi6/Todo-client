@@ -193,10 +193,28 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem("token");
+
+      // Optionally clear other state or storage
+      localStorage.clear();
+      window.location.href = "/login"; // Or use a router: navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Logout failed. Try again.");
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-
+      <button
+        onClick={handleLogout}
+        className="text-white px-4 py-2 rounded hover:bg-blue-700 float-end bg-red-600"
+      >
+        Logout
+      </button>
       {/* Todo Form for adding new todos */}
       <TodoForm onAdd={handleAddTodo} />
       <div className="mb-4">
