@@ -1,6 +1,7 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const API_URL = "https://todo-backend-mrjv.onrender.com";
 type Props = {
   type: "login" | "signup";
 };
@@ -12,10 +13,31 @@ export default function AuthForm({ type }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Dummy redirect for now
-    console.log(`${type.toUpperCase()} with`, { email, password });
-    navigate("/dashboard");
+  
+    try {
+      if (type === "signup") {
+        const response = await axios.post(`${API_URL}/register`, {
+          email,
+          password,
+        });
+        console.log("Signup success:", response.data);
+        alert("Signup success");
+      } else {
+        const response = await axios.post(`${API_URL}/login`, {
+          email,
+          password,
+        });
+        const { token } = response.data;
+        localStorage.setItem("token", token); // store JWT for later use
+        console.log("Login success:", token);
+        alert("Login success")
+      }
+  
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error(`${type} failed:`, error.response?.data || error.message);
+      alert(error.response?.data?.message || "An error occurred");
+    }
   };
 
   return (
