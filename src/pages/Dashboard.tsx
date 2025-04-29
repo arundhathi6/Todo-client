@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import TodoItem from "../components/TodoItem";
 import { Todo, TodoStatus } from "../types";
 import TodoForm from "../components/TodoForm";
+import axios from "axios";
+const API_URL = "https://todo-backend-mrjv.onrender.com";
 
-// Dashboard component
 export default function Dashboard() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editTodo, setEditTodo] = useState<Todo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [filter,setFilter]=useState('all')
+  const [filter, setFilter] = useState("all");
   const [newTodo, setNewTodo] = useState({
     title: "",
     description: "",
@@ -17,7 +18,7 @@ export default function Dashboard() {
   });
 
   const filteredTodos =
-  filter === "all" ? todos : todos.filter((todo) => todo.status === filter);
+    filter === "all" ? todos : todos.filter((todo) => todo.status === filter);
 
   // Fetch todos
   useEffect(() => {
@@ -62,25 +63,31 @@ export default function Dashboard() {
     setTodos(updatedTodos);
   };
 
-  // Handle adding a new todo
-  const handleAddTodo = (newTodo: {
+  const handleAddTodo = async (newTodo: {
     title: string;
     description: string;
     dueDate: string;
     status: TodoStatus;
   }) => {
-    const dummyTodo = {
-      id: Date.now().toString(),
-      ...newTodo,
-    };
-
-    // Add the new todo to the todos array
-    setTodos([...todos, dummyTodo]);
-    // axios.post('/api/todos', newTodo)
-    //   .then(response => {
-    //     setTodos([...todos, response.data]); // Add new todo to the list
-    //   })
-    //   .catch(error => console.error('Error adding todo:', error));
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authorization token is missing");
+      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.post(`${API_URL}/todo`, newTodo, config);
+      const addedTodo = response.data;
+      // console.log("adding todo...", addedTodo);
+      setTodos((prevTodos) => [...prevTodos, addedTodo]);
+      alert("Todo added successfully!");
+    } catch (error) {
+      console.error("Error adding todo:", error);
+      alert("Error adding todo");
+    }
   };
 
   const handleEdit = (todo: Todo) => {
@@ -121,7 +128,6 @@ export default function Dashboard() {
     //   })
     //   .catch((error) => console.error("Error updating todo:", error));
   };
- 
 
   return (
     <div className="p-4">

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const API_URL = "https://todo-backend-mrjv.onrender.com";
+
 type Props = {
   type: "login" | "signup";
 };
@@ -27,9 +28,9 @@ export default function AuthForm({ type }: Props) {
           email,
           password,
         });
-        const { token } = response.data;
-        localStorage.setItem("token", token); // store JWT for later use
-        console.log("Login success:", token);
+        const { accessToken } = response.data;
+        localStorage.setItem("token", accessToken); // store JWT for later use
+        // console.log("Login success:", accessToken);
         alert("Login success")
       }
   
