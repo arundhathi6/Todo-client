@@ -6,6 +6,7 @@ import axios from "axios";
 const API_URL = "https://todo-backend-mrjv.onrender.com";
 
 export default function Dashboard() {
+  const [theme, setTheme] = useState("light");
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -50,6 +51,14 @@ export default function Dashboard() {
 
     fetchTodos();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const handleAddTodo = async (newTodo: {
     title: string;
@@ -207,17 +216,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen bg-white text-black dark:bg-gray-300 dark:text-black transition-colors">
+      <div className="float-end flex gap-1">
+        <button
+          onClick={toggleTheme}
+          className="text-white px-4 py-2 rounded bg-black"
+        >
+          {theme === "light" ? "Dark Mode" : "Light Mode"}
+        </button>
+        <button
+          onClick={handleLogout}
+          className="text-white px-4 py-2 rounded hover:bg-blue-700 bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
       <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-      <button
-        onClick={handleLogout}
-        className="text-white px-4 py-2 rounded hover:bg-blue-700 float-end bg-red-600"
-      >
-        Logout
-      </button>
       {/* Todo Form for adding new todos */}
       <TodoForm onAdd={handleAddTodo} />
-      <div className="mb-4">
+      <div className="mb-4 bg-white text-black dark:bg-gray-300 dark:text-black transition-colors">
         <button
           className={`px-3 py-1 mr-2 rounded ${
             filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
@@ -264,10 +281,10 @@ export default function Dashboard() {
       {/* Edit Modal */}
       {isEditing && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg">
+          <div className="p-6 rounded-lg bg-white text-black dark:bg-gray-300 dark:text-black transition-colors">
             <h2 className="text-xl mb-4">Edit To-Do</h2>
             <input
-              className="mb-2 p-2 border border-gray-300 rounded w-full"
+              className="mb-2 p-2 border border-gray-300 dark:border-white rounded w-full bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
               type="text"
               value={newTodo.title}
               onChange={(e) =>
@@ -276,7 +293,7 @@ export default function Dashboard() {
               placeholder="Title"
             />
             <textarea
-              className="mb-2 p-2 border border-gray-300 rounded w-full"
+              className="mb-2 p-2 border border-gray-300  rounded w-full dark:border-white bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
               value={newTodo.description}
               onChange={(e) =>
                 setNewTodo({ ...newTodo, description: e.target.value })
@@ -284,7 +301,7 @@ export default function Dashboard() {
               placeholder="Description"
             />
             <input
-              className="mb-2 p-2 border border-gray-300 rounded w-full"
+              className="mb-2 p-2 border border-gray-300 dark:border-white rounded w-full bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
               type="date"
               value={newTodo.dueDate}
               onChange={(e) =>
@@ -292,7 +309,7 @@ export default function Dashboard() {
               }
             />
             <select
-              className="mb-2 p-2 border border-gray-300 rounded w-full"
+              className="mb-2 p-2 border border-gray-300 rounded w-full dark:border-white bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
               value={newTodo.status}
               onChange={(e) =>
                 setNewTodo({ ...newTodo, status: e.target.value })

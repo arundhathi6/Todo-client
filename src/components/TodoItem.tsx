@@ -13,9 +13,8 @@ export default function TodoItem({
   onToggleStatus,
   onEdit,
 }: Props) {
-
   return (
-    <div className="flex justify-between items-start border p-3 mb-3 rounded shadow bg-white">
+    <div className="flex justify-between items-start border dark:border-white p-3 mb-3 rounded shadow bg-white text-black dark:bg-gray-300 dark:text-black transition-colors">
       <div>
         <h4 className="font-semibold text-lg">{todo.title}</h4>
         <p className="text-sm text-gray-600">{todo.description}</p>
@@ -36,11 +35,11 @@ export default function TodoItem({
           {todo.status === "pending" ? "Mark as Completed" : "Mark as Pending"}
         </button>
         <button
-            className="text-green-600 hover:underline text-sm"
-            onClick={() => onEdit(todo)}
-          >
-            Edit
-          </button>
+          className="text-green-600 hover:underline text-sm"
+          onClick={() => onEdit(todo)}
+        >
+          Edit
+        </button>
         <button
           className="text-red-600 hover:underline text-sm"
           onClick={() => onDelete(todo._id)}

@@ -28,28 +28,25 @@ export default function TodoForm({ onAdd }: Props) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white shadow p-4 rounded mb-6 space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="shadow p-4 rounded mb-6 space-y-4">
       <h3 className="text-xl font-semibold">Add New Todo</h3>
       <input
         type="text"
         placeholder="Title"
-        className="w-full border p-2 rounded"
+        className="w-full border dark:border-white p-2 rounded bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
       <textarea
         placeholder="Description"
-        className="w-full border p-2 rounded"
+        className="w-full border dark:border-white p-2 rounded bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
       <input
         type="date"
-        className="w-full border p-2 rounded"
+        className="w-full border dark:border-white p-2 rounded bg-white text-black dark:bg-gray-300 dark:text-black transition-colors"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
         required
