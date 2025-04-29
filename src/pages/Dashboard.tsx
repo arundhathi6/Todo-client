@@ -142,32 +142,49 @@ export default function Dashboard() {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    if (editTodo) {
-      const updatedTodos = todos.map((todo) =>
-        todo._id === editTodo._id ? { ...todo, ...newTodo } : todo
+  const handleSave = async () => {
+    if (!editTodo) return;
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/todo/${editTodo._id}`,
+        {
+          ...newTodo,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      // Ensure that the status field is a valid TodoStatus
-      const updatedTodosWithStatus: Todo[] = updatedTodos.map((todo) => ({
-        ...todo,
-        status: todo.status as TodoStatus, // Ensure status is of type TodoStatus
-      }));
+      if (response.status === 200) {
+        const updatedTodos = todos.map((todo) =>
+          todo._id === editTodo._id ? response.data : todo
+        );
 
-      setTodos(updatedTodosWithStatus);
-      setIsEditing(false);
-      setEditTodo(null);
+        setTodos(updatedTodos);
+        setIsEditing(false);
+        setEditTodo(null);
+        setNewTodo({
+          title: "",
+          description: "",
+          dueDate: "",
+          status: "pending",
+        });
+        alert("Updated successfully!");
+      } else {
+        console.error("Failed to update todo:", response.data);
+        alert("Failed to update todo!");
+      }
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      alert("Error updating todo!");
     }
-    // axios.put(`/api/todos/${editTodo?.id}`, newTodo)
-    //   .then((response) => {
-    //     // Update the todos list with the updated to-do
-    //     setTodos(todos.map((todo) =>
-    //       todo.id === editTodo?.id ? response.data : todo
-    //     ));
-    //     setIsEditing(false);
-    //     setEditTodo(null);
-    //   })
-    //   .catch((error) => console.error("Error updating todo:", error));
   };
 
   return (
