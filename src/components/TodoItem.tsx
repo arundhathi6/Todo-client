@@ -33,7 +33,7 @@ export default function TodoItem({
           className="text-blue-600 hover:underline text-sm"
           onClick={() => onToggleStatus(todo._id)}
         >
-          {todo.status === "pending" ? "Completed" : "Pending"}
+          {todo.status === "pending" ? "Mark as Completed" : "Mark as Pending"}
         </button>
         <button
             className="text-green-600 hover:underline text-sm"
