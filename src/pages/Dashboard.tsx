@@ -71,9 +71,28 @@ export default function Dashboard() {
     }
   };
 
-  const handleDeleteTodo = (id: string) => {
-    const updatedTodos = todos.filter((todo) => todo._id !== id);
-    setTodos(updatedTodos);
+  const handleDeleteTodo = async (id: string) => {
+    const confirmDelete = window.confirm("Do you want to delete this todo?");
+    if (!confirmDelete) return;
+    try {
+      const response = await axios.delete(`${API_URL}/todo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const updatedTodos = todos.filter((todo) => todo._id !== id);
+        alert("Deleted todo!");
+        setTodos(updatedTodos);
+      } else {
+        console.error("Failed to delete todo:", response.data);
+        alert("Failed to delete todo!");
+      }
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+      alert("Failed to delete todo!");
+    }
   };
 
   const handleToggleStatus = async (id: string) => {
